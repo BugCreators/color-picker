@@ -2,7 +2,7 @@
 require('./index.scss')
 
 import template from './template'
-import { hsv2hsl, parseColor, hsv2rgb, rgb2hex } from './color'
+import { hsv2hsl, parseColor, hsv2rgb, rgb2hex, hex2rgb } from './color'
 import Draggable, { Coordinate } from './draggable'
 import { $, PlainObject, isFunction } from './utils'
 
@@ -276,6 +276,9 @@ function updateColor(this: ColorPicker) {
  * @class ColorPicker
  */
 export class ColorPicker {
+  public static hex2rgb = hex2rgb
+  public static rgb2hex = rgb2hex
+
   protected _states: PlainObject
   protected _props: Props
 
