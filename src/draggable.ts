@@ -31,6 +31,8 @@ function handlerStart(this: Draggable, event: MouseEvent) {
   if (Draggable.dragging)
     return
   event.preventDefault()
+  on(document, 'touchmove', this._handlers.drag)
+  on(document, 'touchend', this._handlers.dragEnd)
   on(document, 'mousemove', this._handlers.drag)
   on(document, 'mouseup', this._handlers.dragEnd)
   Draggable.dragging = true
@@ -54,6 +56,8 @@ function handlerDrag(this: Draggable, event: MouseEvent) {
  * @param {(MouseEvent | boolean)} event
  */
 function handlerEnd(this: Draggable, event: MouseEvent | boolean) {
+  off(document, 'touchmove', this._handlers.drag)
+  off(document, 'touchend', this._handlers.dragEnd)
   off(document, 'mousemove', this._handlers.drag)
   off(document, 'mouseup', this._handlers.dragEnd)
   Draggable.dragging = false
@@ -84,6 +88,7 @@ function bindEvents(this: Draggable) {
   handlers.drag = handlerDrag.bind(this)
   handlers.dragEnd = handlerEnd.bind(this)
   handlers.click = handlerClick.bind(this)
+  on($el, 'touchstart', handlers.dragStart)
   on($el, 'mousedown', handlers.dragStart)
   on($el, 'click', handlers.click)
 }
@@ -96,6 +101,7 @@ function bindEvents(this: Draggable) {
 function unbindEvents(this: Draggable) {
   const handlers = this._handlers
   const $el = this._$el
+  off($el, 'touchstart', handlers.dragStart)
   off($el, 'mousedown', handlers.dragStart)
   off($el, 'click', handlers.click)
   handlerEnd.call(this, false)
@@ -109,7 +115,13 @@ function unbindEvents(this: Draggable) {
  */
 function getCoordinate(el: Element, event: MouseEvent | TouchEvent): Coordinate {
   const rect = el.getBoundingClientRect()
-  const mouseEvent = event as MouseEvent
+
+  let mouseEvent: Touch | MouseEvent;
+  if (event.constructor === TouchEvent) {
+    mouseEvent = (event as TouchEvent).changedTouches[0];
+  } else {
+    mouseEvent = event as MouseEvent;
+  }
   const left = mouseEvent.clientX - rect.left
   const top = mouseEvent.clientY - rect.top
   return {
