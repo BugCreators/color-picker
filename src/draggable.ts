@@ -117,7 +117,7 @@ function getCoordinate(el: Element, event: MouseEvent | TouchEvent): Coordinate 
   const rect = el.getBoundingClientRect()
 
   let mouseEvent: Touch | MouseEvent;
-  if (event.constructor === TouchEvent) {
+  if ("ontouchend" in document) {
     mouseEvent = (event as TouchEvent).changedTouches[0];
   } else {
     mouseEvent = event as MouseEvent;
