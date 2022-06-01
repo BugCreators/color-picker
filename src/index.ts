@@ -1,10 +1,10 @@
-// 引入样式文件
-require('./index.scss')
-
 import template from './template'
 import { hsv2hsl, parseColor, hsv2rgb, rgb2hex, hex2rgb } from './color'
 import Draggable, { Coordinate } from './draggable'
 import { $, PlainObject, isFunction } from './utils'
+
+// 引入样式文件
+import './index.scss'
 
 // component name
 const UI_NAME = 'mo-color-picker'

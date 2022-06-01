@@ -1,14 +1,13 @@
 {
   "compilerOptions": {
-    "outDir": "examples",
     "sourceMap": true,
     "noImplicitAny": true,
-    "module": "es2015",
-    "target": "es5",
-    "jsx": "react",
+    "module": "esnext",
+    "target": "esnext",
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
     "paths": {}
-  }
+  },
+  "include": ["src/*.ts", "src/*.d.ts"]
 }
