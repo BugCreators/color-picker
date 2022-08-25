@@ -31,12 +31,12 @@ function handlerStart(this: Draggable, event: MouseEvent) {
   if (Draggable.dragging)
     return
   event.preventDefault()
-  on(document, 'touchmove', this._handlers.drag)
-  on(document, 'touchend', this._handlers.dragEnd)
-  on(document, 'mousemove', this._handlers.drag)
-  on(document, 'mouseup', this._handlers.dragEnd)
+  on(document, 'touchmove', this._handlers!.drag)
+  on(document, 'touchend', this._handlers!.dragEnd)
+  on(document, 'mousemove', this._handlers!.drag)
+  on(document, 'mouseup', this._handlers!.dragEnd)
   Draggable.dragging = true
-  isFunction(this._props.start) && this._props.start.call(this, event)
+  isFunction(this._props.start) && this._props.start!.call(this, event)
 }
 
 /**
@@ -46,7 +46,7 @@ function handlerStart(this: Draggable, event: MouseEvent) {
  * @param {MouseEvent} event
  */
 function handlerDrag(this: Draggable, event: MouseEvent) {
-  isFunction(this._props.drag) && this._props.drag.call(this, getCoordinate(this._$el, event), event)
+  isFunction(this._props.drag) && this._props.drag!.call(this, getCoordinate(this._$el!, event), event)
 }
 
 /**
@@ -56,13 +56,13 @@ function handlerDrag(this: Draggable, event: MouseEvent) {
  * @param {(MouseEvent | boolean)} event
  */
 function handlerEnd(this: Draggable, event: MouseEvent | boolean) {
-  off(document, 'touchmove', this._handlers.drag)
-  off(document, 'touchend', this._handlers.dragEnd)
-  off(document, 'mousemove', this._handlers.drag)
-  off(document, 'mouseup', this._handlers.dragEnd)
+  off(document, 'touchmove', this._handlers!.drag)
+  off(document, 'touchend', this._handlers!.dragEnd)
+  off(document, 'mousemove', this._handlers!.drag)
+  off(document, 'mouseup', this._handlers!.dragEnd)
   Draggable.dragging = false
   if (typeof event !== 'boolean') {
-    isFunction(this._props.end) && this._props.end.call(this, getCoordinate(this._$el, event), event)
+    isFunction(this._props.end) && this._props.end!.call(this, getCoordinate(this._$el!, event), event)
   }
 }
 
@@ -73,7 +73,7 @@ function handlerEnd(this: Draggable, event: MouseEvent | boolean) {
  * @param {MouseEvent} event
  */
 function handlerClick(this: Draggable, event: MouseEvent) {
-  isFunction(this._props.end) && this._props.end.call(this, getCoordinate(this._$el, event), event)
+  isFunction(this._props.end) && this._props.end!.call(this, getCoordinate(this._$el!, event), event)
 }
 
 /**
@@ -84,6 +84,8 @@ function handlerClick(this: Draggable, event: MouseEvent) {
 function bindEvents(this: Draggable) {
   const handlers = this._handlers
   const $el = this._$el
+  if (!handlers || !$el) return;
+
   handlers.dragStart = handlerStart.bind(this)
   handlers.drag = handlerDrag.bind(this)
   handlers.dragEnd = handlerEnd.bind(this)
@@ -101,6 +103,7 @@ function bindEvents(this: Draggable) {
 function unbindEvents(this: Draggable) {
   const handlers = this._handlers
   const $el = this._$el
+  if (!handlers || !$el) return;
   off($el, 'touchstart', handlers.dragStart)
   off($el, 'mousedown', handlers.dragStart)
   off($el, 'click', handlers.click)
@@ -143,9 +146,9 @@ export class Draggable {
   // 是否正在拖拽中
   static dragging = false
   // 绑定事件的元素
-  protected _$el: Element
+  protected _$el: Element | null
   // 事件句柄收集器
-  protected _handlers: Handlers
+  protected _handlers: Handlers | null
   // 配置项
   protected _props: Props
 

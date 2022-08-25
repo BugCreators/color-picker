@@ -20,7 +20,7 @@ interface Colors {
 
 interface Props {
   // 绑定值
-  value?: string
+  value?: string | null
   // 格式化
   format?: ColorFormat
   // 支持透明度？
@@ -225,25 +225,28 @@ function checkColor(color: string) {
  * @param {string} value
  * @param {boolean} [init]
  */
-function value2Colors(this: ColorPicker, value: string, init?: boolean) {
+function value2Colors(this: ColorPicker, value?: string | null, init?: boolean) {
   // h: 0 - 360
   // s: 0 - 1
   // v: 0 - 1
   const { _states: states } = this
   if (value) {
     // 正确时返回颜色值，不正确时返回undefined
-    const { h, s, v, a } = parseColor(value)
-    const { r, g, b } = hsv2rgb(h, s, v)
-    // 校验当前颜色是否正确
-    if (h === void 0 || !checkColor(`rgb(${r},${g},${b})`)) {
-      // 不做操作
-    } else {
-      states.h = h
-      states.s = s
-      states.v = v
-      states.a = a
-      afterColorsChange.call(this)
-      return
+    const hsva  = parseColor(value);
+    if (hsva) {
+      const { h, s, v, a } = hsva;
+      const { r, g, b } = hsv2rgb(h, s, v)
+      // 校验当前颜色是否正确
+      if (h === void 0 || !checkColor(`rgb(${r},${g},${b})`)) {
+        // 不做操作
+      } else {
+        states.h = h
+        states.s = s
+        states.v = v
+        states.a = a
+        afterColorsChange.call(this)
+        return
+      }
     }
   }
 
@@ -264,7 +267,7 @@ function value2Colors(this: ColorPicker, value: string, init?: boolean) {
 function updateColor(this: ColorPicker) {
   const { _props: props, _states: states } = this
   const { h, s, v, a } = states
-  isFunction(props.change) && props.change.call(this, this.getValue(), {
+  isFunction(props.change) && props.change!.call(this, this.getValue(), {
     h, s, v, a
   })
 }
@@ -347,7 +350,9 @@ export class ColorPicker {
   destroy() {
     unbindEvents.call(this)
     this._states.$el.parentNode.removeChild(this._states.$el)
+    //@ts-ignore
     this._props = null
+    //@ts-ignore
     this._states = null
   }
 }

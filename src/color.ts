@@ -91,7 +91,7 @@ export const rgb2hsv = (r: number, g: number, b: number, a?: number): Hsva => {
       case g:
         h = (b - r) / d + 2
         break
-      case b:
+      default:
         h = (r - g) / d + 4
         break
     }
@@ -190,7 +190,7 @@ export const rgb2hex = (r: number, g: number, b: number): string => {
  * 输出h.s.v.a
  * @param color 
  */
-export const parseColor = (color: string): Hsva => {
+export const parseColor = (color: string): Hsva | undefined => {
   if (!color) {
     return
   }
