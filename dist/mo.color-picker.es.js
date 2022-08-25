@@ -164,7 +164,7 @@ var rgb2hsv = function rgb2hsv2(r, g, b, a) {
       case g:
         h = (b - r) / d + 2;
         break;
-      case b:
+      default:
         h = (r - g) / d + 4;
         break;
     }
@@ -319,6 +319,8 @@ function handlerClick(event) {
 function bindEvents$1() {
   var handlers = this._handlers;
   var $el = this._$el;
+  if (!handlers || !$el)
+    return;
   handlers.dragStart = handlerStart.bind(this);
   handlers.drag = handlerDrag.bind(this);
   handlers.dragEnd = handlerEnd.bind(this);
@@ -330,6 +332,8 @@ function bindEvents$1() {
 function unbindEvents$1() {
   var handlers = this._handlers;
   var $el = this._$el;
+  if (!handlers || !$el)
+    return;
   off($el, "touchstart", handlers.dragStart);
   off($el, "mousedown", handlers.dragStart);
   off($el, "click", handlers.click);
@@ -499,17 +503,20 @@ function checkColor(color) {
 function value2Colors(value, init) {
   var states = this._states;
   if (value) {
-    var _parseColor = parseColor(value), h = _parseColor.h, s = _parseColor.s, v = _parseColor.v, a = _parseColor.a;
-    var _hsv2rgb = hsv2rgb(h, s, v), r = _hsv2rgb.r, g = _hsv2rgb.g, b = _hsv2rgb.b;
-    if (h === void 0 || !checkColor("rgb(".concat(r, ",").concat(g, ",").concat(b, ")")))
-      ;
-    else {
-      states.h = h;
-      states.s = s;
-      states.v = v;
-      states.a = a;
-      afterColorsChange.call(this);
-      return;
+    var hsva = parseColor(value);
+    if (hsva) {
+      var h = hsva.h, s = hsva.s, v = hsva.v, a = hsva.a;
+      var _hsv2rgb = hsv2rgb(h, s, v), r = _hsv2rgb.r, g = _hsv2rgb.g, b = _hsv2rgb.b;
+      if (h === void 0 || !checkColor("rgb(".concat(r, ",").concat(g, ",").concat(b, ")")))
+        ;
+      else {
+        states.h = h;
+        states.s = s;
+        states.v = v;
+        states.a = a;
+        afterColorsChange.call(this);
+        return;
+      }
     }
   }
   if (init) {
