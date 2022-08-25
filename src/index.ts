@@ -302,7 +302,7 @@ export class ColorPicker {
    * @param {(Colors | null)} value
    * @memberof ColorPicker
    */
-  setValue(value: Colors | null) {
+  setValue(value: string | null) {
     if (value === null) {
       value2Colors.call(this, null, true)
     } else if (value) {
